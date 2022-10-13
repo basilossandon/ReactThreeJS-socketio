@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Text, Stats } from '@react-three/drei'
+import {
+    OrbitControls,
+    PointerLockControls,
+    Text,
+    Stats,
+} from '@react-three/drei'
 import { MeshNormalMaterial, BoxBufferGeometry } from 'three'
 import { io } from 'socket.io-client'
 
@@ -8,7 +13,7 @@ import './App.css'
 
 const ControlsWrapper = ({ socket }) => {
     const controlsRef = useRef()
-    const [updateCallback, setUpdateCallback] = useState(null)
+    const [updateCallback, setUpdateCallback] = useState<any[]>(null)
 
     // Register the update event and clean up
     useEffect(() => {
