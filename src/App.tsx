@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Text, Stats } from '@react-three/drei'
-import { MeshNormalMaterial, BoxBufferGeometry } from 'three'
+import { MeshNormalMaterial, BoxGeometry } from 'three'
 import { io } from 'socket.io-client'
 
 import './App.css'
@@ -53,7 +53,7 @@ const UserWrapper = ({ position, rotation, id }) => {
         <mesh
             position={position}
             rotation={rotation}
-            geometry={new BoxBufferGeometry()}
+            geometry={new BoxGeometry()}
             material={new MeshNormalMaterial()}
         >
             {/* Optionally show the ID above the user's mesh */}
