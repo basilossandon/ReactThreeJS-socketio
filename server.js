@@ -43,10 +43,10 @@ ioServer.on('connection', (client) => {
 
     ioServer.sockets.emit('move', clients)
 
-    client.on('move', ({ id, quaternion, position }) => {
-        clients[id].position = [position.x, position.y, position.z]
-        clients[id].quaternion = [quaternion._x, quaternion._y, quaternion._z]
-
+    client.on('move', (payload) => {
+        const { id, quaternion, position } = payload
+        clients[id].position = position
+        clients[id].quaternion = quaternion
         ioServer.sockets.emit('move', clients)
     })
 
