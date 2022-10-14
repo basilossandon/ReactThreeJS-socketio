@@ -13,7 +13,7 @@ import { io } from 'socket.io-client'
 import './App.css'
 import WasdControls from './controllers/WASD'
 
-const ControlsWrapper = ({ socket }) => {
+function ControlsWrapper({ clientName, socket }) {
     const { camera } = useThree()
     // Register the update event and clean up
 
@@ -25,6 +25,7 @@ const ControlsWrapper = ({ socket }) => {
             id,
             quaternion,
             position,
+            name: clientName,
         })
     }
 
@@ -41,8 +42,10 @@ const ControlsWrapper = ({ socket }) => {
     )
 }
 
-const UserWrapper = ({ position, quaternion, id }) => {
+function UserWrapper({ name, position, quaternion, id }) {
     if (!position) return
+    const { camera } = useThree()
+    console.log('@@', camera.position.z)
 
     return (
         <mesh
@@ -58,12 +61,20 @@ const UserWrapper = ({ position, quaternion, id }) => {
         >
             {/* Optionally show the ID above the user's mesh */}
             <Text
+                rotation={[
+                    0,
+                    Math.atan2(
+                        camera.position.x - position.x,
+                        camera.position.z - position.z
+                    ),
+                    0,
+                ]}
                 position={[0, 1.0, 0]}
                 color="black"
                 anchorX="center"
                 anchorY="middle"
             >
-                {id}
+                {name}
             </Text>
         </mesh>
     )
@@ -72,6 +83,9 @@ const UserWrapper = ({ position, quaternion, id }) => {
 function App() {
     const [socketClient, setSocketClient] = useState(null)
     const [clients, setClients] = useState({})
+    const [name, setName] = useState('Username')
+
+    const [clientName, setClientName] = useState('Username')
 
     useEffect(() => {
         // On mount initialize the socket connection
@@ -93,34 +107,50 @@ function App() {
 
     return (
         socketClient && (
-            <Canvas camera={{ position: [0, 1, -5], near: 0.1, far: 1000 }}>
-                <Stats />
-                <ControlsWrapper socket={socketClient} />
-                <gridHelper rotation={[0, 0, 0]} />
+            <>
+                <div className="nameInputContainer">
+                    <div className="nameLabel">Name</div>
 
-                {/* Filter myself from the client list and create user boxes with IDs */}
-                {Object.keys(clients)
-                    .filter((clientKey) => clientKey !== socketClient.id)
-                    .map((client) => {
-                        console.log(
-                            Object.keys(clients).filter(
-                                (clientKey) => clientKey !== socketClient.id
+                    <input
+                        value={name}
+                        // onMouseEnter={() => alert('entro!')}
+                        // value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="nameInput"
+                    />
+                    <div
+                        onClick={() => setClientName(name)}
+                        className="nameButton"
+                    >
+                        Set name
+                    </div>
+                </div>
+                <Canvas camera={{ position: [0, 1, -5], near: 0.1, far: 1000 }}>
+                    <Stats />
+                    <ControlsWrapper
+                        clientName={clientName}
+                        socket={socketClient}
+                    />
+                    <gridHelper rotation={[0, 0, 0]} />
+                    {/* Filter myself from the client list and create user boxes with IDs */}
+                    {Object.keys(clients)
+                        .filter((clientKey) => clientKey !== socketClient.id)
+                        .map((client) => {
+                            const { name, position, quaternion } =
+                                clients[client]
+
+                            return (
+                                <UserWrapper
+                                    key={client}
+                                    id={client}
+                                    name={name}
+                                    position={position}
+                                    quaternion={quaternion}
+                                />
                             )
-                        )
-                        const { position, quaternion } = clients[client]
-                        console.log('@@ Rendering', position)
-                        console.log('@@ Rendering', quaternion)
-
-                        return (
-                            <UserWrapper
-                                key={client}
-                                id={client}
-                                position={position}
-                                quaternion={quaternion}
-                            />
-                        )
-                    })}
-            </Canvas>
+                        })}
+                </Canvas>
+            </>
         )
     )
 }
