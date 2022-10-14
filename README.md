@@ -10,8 +10,8 @@
 
 To quickly get started
 
--   Clone the repository (`git clone git@github.com:juniorxsound/R3F.Multiplayer.git`)
--   Install dependencies (Run `yarn` / `npm install` inside the repo root)
+-   Clone the repository
+-   Install dependencies (Run `yarn` inside the repo root)
 -   Start the development server by running `yarn dev`
 
 ## Features
