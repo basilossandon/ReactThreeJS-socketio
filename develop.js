@@ -52,14 +52,16 @@ ioServer.on('connection', (client) => {
     //Add a new client indexed by his id
     clients[client.id] = {
         position: [0, 0, 0],
-        rotation: [0, 0, 0],
+        quaternion: [0, 0, 0],
     }
 
     ioServer.sockets.emit('move', clients)
 
-    client.on('move', ({ id, rotation, position }) => {
+    client.on('move', (payload) => {
+        const { id, quaternion, position } = payload
+        console.log(payload)
         clients[id].position = position
-        clients[id].rotation = rotation
+        clients[id].quaternion = quaternion
 
         ioServer.sockets.emit('move', clients)
     })

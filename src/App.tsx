@@ -1,64 +1,41 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Canvas } from '@react-three/fiber'
+import { Canvas, useThree } from '@react-three/fiber'
 import {
     OrbitControls,
     PointerLockControls,
     Text,
     Stats,
 } from '@react-three/drei'
-import { MeshNormalMaterial, BoxBufferGeometry } from 'three'
+import { MeshNormalMaterial, BoxGeometry } from 'three'
 import { io } from 'socket.io-client'
 
 import './App.css'
 
 const ControlsWrapper = ({ socket }) => {
-    const controlsRef = useRef()
-    const [updateCallback, setUpdateCallback] = useState<any[]>(null)
-
+    const { camera } = useThree()
     // Register the update event and clean up
-    useEffect(() => {
-        const onControlsChange = (val) => {
-            const { position, rotation } = val.target.object
-            const { id } = socket
 
-            const posArray = []
-            const rotArray = []
+    function movePlayer() {
+        const { position, quaternion } = camera
+        console.log('@@ ', position)
+        const { id } = socket
 
-            position.toArray(posArray)
-            rotation.toArray(rotArray)
+        socket.emit('move', {
+            id,
+            quaternion,
+            position,
+        })
+    }
 
-            socket.emit('move', {
-                id,
-                rotation: rotArray,
-                position: posArray,
-            })
-        }
-
-        if (controlsRef.current) {
-            setUpdateCallback(
-                controlsRef.current.addEventListener('change', onControlsChange)
-            )
-        }
-
-        // Dispose
-        return () => {
-            if (updateCallback && controlsRef.current)
-                controlsRef.current.removeEventListener(
-                    'change',
-                    onControlsChange
-                )
-        }
-    }, [controlsRef, socket])
-
-    return <OrbitControls ref={controlsRef} />
+    return <PointerLockControls onChange={() => movePlayer()} />
 }
 
-const UserWrapper = ({ position, rotation, id }) => {
+const UserWrapper = ({ position, quaternion, id }) => {
     return (
         <mesh
             position={position}
-            rotation={rotation}
-            geometry={new BoxBufferGeometry()}
+            quaternion={quaternion}
+            geometry={new BoxGeometry()}
             material={new MeshNormalMaterial()}
         >
             {/* Optionally show the ID above the user's mesh */}
@@ -107,13 +84,14 @@ function App() {
                 {Object.keys(clients)
                     .filter((clientKey) => clientKey !== socketClient.id)
                     .map((client) => {
-                        const { position, rotation } = clients[client]
+                        const { position, quaternion } = clients[client]
+                        console.log('@@ Rendering', position)
                         return (
                             <UserWrapper
                                 key={client}
                                 id={client}
                                 position={position}
-                                rotation={rotation}
+                                quaternion={quaternion}
                             />
                         )
                     })}

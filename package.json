@@ -1,5 +1,6 @@
 {
     "type": "module",
+    "name": "r3s",
     "scripts": {
         "build": "vite build",
         "dev": "nodemon develop.js",
