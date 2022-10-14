@@ -59,7 +59,6 @@ ioServer.on('connection', (client) => {
 
     client.on('move', (payload) => {
         const { id, quaternion, position } = payload
-        console.log(payload)
         clients[id].position = position
         clients[id].quaternion = quaternion
 

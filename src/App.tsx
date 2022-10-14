@@ -5,11 +5,13 @@ import {
     PointerLockControls,
     Text,
     Stats,
+    FirstPersonControls,
 } from '@react-three/drei'
-import { MeshNormalMaterial, BoxGeometry } from 'three'
+import { MeshNormalMaterial, BoxGeometry, Vector3, Quaternion } from 'three'
 import { io } from 'socket.io-client'
 
 import './App.css'
+import WasdControls from './controllers/WASD'
 
 const ControlsWrapper = ({ socket }) => {
     const { camera } = useThree()
@@ -17,7 +19,6 @@ const ControlsWrapper = ({ socket }) => {
 
     function movePlayer() {
         const { position, quaternion } = camera
-        console.log('@@ ', position)
         const { id } = socket
 
         socket.emit('move', {
@@ -27,14 +28,31 @@ const ControlsWrapper = ({ socket }) => {
         })
     }
 
-    return <PointerLockControls onChange={() => movePlayer()} />
+    return (
+        <>
+            {/* <FirstPersonControls
+                activeLook
+                lookSpeed={1}
+                onUpdate={() => movePlayer()}
+            /> */}
+            <WasdControls onChange={() => movePlayer()} />
+            <PointerLockControls onChange={() => movePlayer()} />
+        </>
+    )
 }
 
 const UserWrapper = ({ position, quaternion, id }) => {
+    if (!position) return
+
     return (
         <mesh
-            position={position}
-            quaternion={quaternion}
+            position={[position.x, position.y, position.z]}
+            quaternion={[
+                quaternion._x,
+                quaternion._y,
+                quaternion._z,
+                quaternion._w,
+            ]}
             geometry={new BoxGeometry()}
             material={new MeshNormalMaterial()}
         >
@@ -84,8 +102,15 @@ function App() {
                 {Object.keys(clients)
                     .filter((clientKey) => clientKey !== socketClient.id)
                     .map((client) => {
+                        console.log(
+                            Object.keys(clients).filter(
+                                (clientKey) => clientKey !== socketClient.id
+                            )
+                        )
                         const { position, quaternion } = clients[client]
                         console.log('@@ Rendering', position)
+                        console.log('@@ Rendering', quaternion)
+
                         return (
                             <UserWrapper
                                 key={client}

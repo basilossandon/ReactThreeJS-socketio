@@ -38,14 +38,14 @@ ioServer.on('connection', (client) => {
     //Add a new client indexed by his id
     clients[client.id] = {
         position: [0, 0, 0],
-        rotation: [0, 0, 0],
+        quaternion: [0, 0, 0],
     }
 
     ioServer.sockets.emit('move', clients)
 
-    client.on('move', ({ id, rotation, position }) => {
-        clients[id].position = position
-        clients[id].rotation = rotation
+    client.on('move', ({ id, quaternion, position }) => {
+        clients[id].position = [position.x, position.y, position.z]
+        clients[id].quaternion = [quaternion._x, quaternion._y, quaternion._z]
 
         ioServer.sockets.emit('move', clients)
     })
