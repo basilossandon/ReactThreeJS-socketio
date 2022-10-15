@@ -10,7 +10,7 @@ import WasdControls from './controllers/WASD'
 function ControlsWrapper({ clientName, socket }) {
     const { camera } = useThree()
     // Register the update event and clean up
-    function movePlayer() {
+    function sendData() {
         const { position, quaternion } = camera
         const { id } = socket
 
@@ -27,10 +27,10 @@ function ControlsWrapper({ clientName, socket }) {
             {/* <FirstPersonControls
                 activeLook
                 lookSpeed={1}
-                onUpdate={() => movePlayer()}
+                onUpdate={() => sendData()}
             /> */}
-            <WasdControls onChange={() => movePlayer()} />
-            <PointerLockControls onChange={() => movePlayer()} />
+            <WasdControls onChange={() => sendData()} />
+            <PointerLockControls onChange={() => sendData()} />
         </>
     )
 }
@@ -77,10 +77,12 @@ function TextSprite({
     )
 }
 
-function UserWrapper({ name, position, quaternion, id }) {
-    if (!position) return
-    const { camera } = useThree()
-
+function UserWrapper({
+    name,
+    position = { x: 0, y: 0, z: 0 },
+    quaternion = { _x: 0, _y: 0, _z: 0 },
+    id,
+}) {
     return (
         <mesh
             position={[position.x, position.y, position.z]}
@@ -151,7 +153,10 @@ function App() {
     return (
         socketClient && (
             <>
-                <div className="absolute mt-14 ml-2 z-10">
+                <div
+                    className="absolute mt-14 ml-2 z-10"
+                    onClick={(e) => e.stopPropagation()}
+                >
                     <div className="bg-white shadow-md sm:rounded-lg">
                         <div className="px-4 py-5 sm:p-6">
                             <h3 className="text-lg font-medium leading-6 text-gray-900">
@@ -177,12 +182,15 @@ function App() {
                                         required
                                     />
                                 </div>
-                                <button
-                                    onClick={() => setClientName(name)}
-                                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                <div
+                                    onClick={(e) => {
+                                        setClientName(name)
+                                        sendData()
+                                    }}
+                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                 >
                                     Submit
-                                </button>
+                                </div>
                             </form>
                         </div>
                     </div>
