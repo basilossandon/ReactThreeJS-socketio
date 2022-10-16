@@ -4,6 +4,7 @@ import { Cube } from './Cube'
 
 export const Cubes = () => {
     const [cubes] = useStore((state) => [state.cubes])
+    console.log(cubes)
     return (
         <>
             <Cube position={[0, 0.5, -10]} />

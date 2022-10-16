@@ -1,4 +1,4 @@
-# fly.toml file generated for r3s on 2022-10-13T18:55:40-03:00
+# fly.toml file generated for r3s on 2022-10-16T05:46:42-03:00
 
 app = "r3s"
 kill_signal = "SIGINT"

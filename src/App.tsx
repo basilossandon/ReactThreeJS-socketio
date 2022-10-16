@@ -69,6 +69,7 @@ function App() {
                         { name: 'left', keys: ['ArrowLeft', 'a', 'A'] },
                         { name: 'right', keys: ['ArrowRight', 'd', 'D'] },
                         { name: 'jump', keys: ['Space'] },
+                        { name: 'run', keys: ['ShiftLeft'] },
                     ]}
                 >
                     <Canvas shadows>
