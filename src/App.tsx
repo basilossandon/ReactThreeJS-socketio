@@ -78,7 +78,6 @@ function App() {
                             <h3 className="text-lg font-medium leading-6 text-gray-900">
                                 Update your name
                             </h3>
-
                             <form className="mt-5 sm:flex sm:items-center">
                                 <div className="w-full sm:max-w-xs mr-2">
                                     <label htmlFor="email" className="sr-only">
@@ -107,6 +106,10 @@ function App() {
                                     Submit
                                 </div>
                             </form>
+                            <br />
+                            Controls <br />
+                            WASD - Movement <br /> Shift - Run <br />
+                            1-5 - Select blocks
                         </div>
                     </div>
                 </div>
