@@ -65,7 +65,8 @@ export default function SettingsMenu({ name, setName, setClientName }) {
                             </form>
                             <br />
                             Controls <br />
-                            WASD - Movement <br /> Shift - Run <br />
+                            WASD - Movement <br /> Shift - Run <br /> Space -
+                            Jump <br />
                             1-5 - Select blocks
                         </div>
                     </div>

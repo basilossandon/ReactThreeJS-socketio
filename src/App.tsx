@@ -96,17 +96,16 @@ function App() {
 
                         <ambientLight intensity={0.5} />
                         <directionalLight
-                            position={[0.01, 0.01, 0.01]}
+                            position={[-10, 10, 5]}
                             shadow-mapSize={[256, 256]}
-                            shadow-bias={-0.00001}
+                            shadow-bias={-0.0001}
                             castShadow
                         >
                             <orthographicCamera
                                 attach="shadow-camera"
-                                args={[-20, 20, -20, 20]}
+                                args={[-10, 10, -10, 10]}
                             />
                         </directionalLight>
-
                         {/* <ControlsWrapper
                         clientName={clientName}
                         socket={socketClient}
