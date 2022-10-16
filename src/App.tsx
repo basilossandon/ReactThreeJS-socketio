@@ -8,6 +8,7 @@ import Player from './components/Player'
 import WasdControls from './controllers/WASD'
 import { Ground } from './components/Ground'
 import { Physics } from '@react-three/cannon'
+import { Cubes } from './components/Cubes'
 
 function ControlsWrapper({ clientName, socket }) {
     const { camera } = useThree()
@@ -65,6 +66,8 @@ function App() {
     return (
         socketClient && (
             <>
+                <div className="absolute inset-1/2 z-20 text-white">+</div>
+
                 <div
                     className="absolute mt-14 ml-2 z-10"
                     onClick={(e) => e.stopPropagation()}
@@ -106,7 +109,7 @@ function App() {
                         </div>
                     </div>
                 </div>
-                <Canvas camera={{ position: [0, 1, 5], near: 0.1 }}>
+                <Canvas camera={{ position: [0, 1, 0] }}>
                     {/* <Sky } /> */}
                     {/* <ambientLight intensity={0.5} /> */}
 
@@ -131,6 +134,7 @@ function App() {
 
                     <Physics>
                         <Ground />
+                        <Cubes />
                     </Physics>
 
                     <Stats />
