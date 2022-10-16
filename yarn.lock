@@ -352,10 +352,10 @@
     cannon-es "^0.20.0"
     cannon-es-debugger "^1.0.0"
 
-"@react-three/drei@9.34.3":
-  version "9.34.3"
-  resolved "https://registry.yarnpkg.com/@react-three/drei/-/drei-9.34.3.tgz#1f8d8b2bed79ae04388c97e74fd26bdda4e96a40"
-  integrity sha512-to6d0l1pELS7IJg64Grkk6nsPD2IFEEmcgRbnik/HxBGv6hbhrti23dA7I0UO6ndaQU2gaNAxqxagupaht5SiA==
+"@react-three/drei@9.34.4":
+  version "9.34.4"
+  resolved "https://registry.yarnpkg.com/@react-three/drei/-/drei-9.34.4.tgz#df74eb60925fda901dc478759e56653dda64eab6"
+  integrity sha512-MhtyFpklFTwsgH0V/pZ1tW2GkXwNpQtTXlobbNs2z6cAozke7NOPtSGZR0C1txs/+k9k7/VK0nQ7XphGQ9c9QA==
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@react-spring/three" "^9.3.1"
@@ -473,10 +473,10 @@
   resolved "https://registry.yarnpkg.com/@types/scheduler/-/scheduler-0.16.2.tgz#1a62f89525723dde24ba1b01b092bf5df8ad4d39"
   integrity sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==
 
-"@types/three@0.141.0":
-  version "0.141.0"
-  resolved "https://registry.yarnpkg.com/@types/three/-/three-0.141.0.tgz#d9d81a54b28ebc2a56931dfd4d9c54d25c20d6c8"
-  integrity sha512-OJdKDgTPVBUgc+s74DYoy4aLznbFFC38Xm4ElmU1YwGNgR7GGFVvFCX7lpVgOsT6S1zSJtGdajTsOYE8/xY9nA==
+"@types/three@0.144.0":
+  version "0.144.0"
+  resolved "https://registry.yarnpkg.com/@types/three/-/three-0.144.0.tgz#a154f40122dbc3668c5424a5373f3965c6564557"
+  integrity sha512-psvEs6q5rLN50jUYZ3D4pZMfxTbdt3A243blt0my7/NcL6chaCZpHe2csbCtx0SOD9fI/XnF3wnVUAYZGqCSYg==
   dependencies:
     "@types/webxr" "*"
 

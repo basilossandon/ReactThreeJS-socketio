@@ -1,7 +1,15 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { io } from 'socket.io-client'
 import { Canvas, useThree } from '@react-three/fiber'
-import { PointerLockControls, Stats, Stars, Sky } from '@react-three/drei'
+import {
+    PointerLockControls,
+    Stats,
+    Stars,
+    Sky,
+    KeyboardControls,
+    AccumulativeShadows,
+    RandomizedLight,
+} from '@react-three/drei'
 
 import './App.css'
 import Player from './components/Player'
@@ -9,83 +17,13 @@ import WasdControls from './controllers/WASD'
 import { Ground } from './components/Ground'
 import { Physics } from '@react-three/cannon'
 import { Cubes } from './components/Cubes'
+import { Camera } from './components/Camera'
+
 import { TextureSelector } from './components/TextureSelector'
-import { Popover } from '@headlessui/react'
+import SettingsMenu from './components/SettingsMenu'
+import Axe from './components/Axe'
 
-function MyPopover({ name, setName, setClientName }) {
-    return (
-        <Popover className="absolute mt-16 inset-0 ml-2  z-90">
-            <Popover.Button className="outline-none ">
-                <div className="shadow-2xl  flex justify-center text-gray-600 items-center  bg-white h-10 w-10 rounded">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-8 h-8"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"
-                        />
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                    </svg>
-                </div>
-            </Popover.Button>
-
-            <Popover.Panel className="absolute z-10">
-                <div className="" onClick={(e) => e.stopPropagation()}>
-                    <div className="bg-white shadow-md rounded-lg">
-                        <div className="px-4 py-5 sm:p-6">
-                            <h3 className="text-lg font-medium leading-6 text-gray-900">
-                                Update your name
-                            </h3>
-                            <form className="mt-5 sm:flex gap-2 flex flex-col sm:items-center">
-                                <div className="w-full sm:max-w-xs mr-2">
-                                    <label htmlFor="email" className="sr-only">
-                                        Email
-                                    </label>
-                                    <input
-                                        value={name}
-                                        // onMouseEnter={() => alert('entro!')}
-                                        // value={name}
-                                        onChange={(e) =>
-                                            setName(e.target.value)
-                                        }
-                                        type="text"
-                                        id="first_name"
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-teal-500 focus:border-teal-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-teal-500 dark:focus:border-teal-500"
-                                        placeholder="John"
-                                        required
-                                    />
-                                </div>
-                                <div
-                                    onClick={(e) => {
-                                        setClientName(name)
-                                    }}
-                                    className="cursor-pointer text-white bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:outline-none focus:ring-teal-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center dark:bg-teal-600 dark:hover:bg-teal-700 dark:focus:ring-teal-800"
-                                >
-                                    Submit
-                                </div>
-                            </form>
-                            <br />
-                            Controls <br />
-                            WASD - Movement <br /> Shift - Run <br />
-                            1-5 - Select blocks
-                        </div>
-                    </div>
-                </div>
-            </Popover.Panel>
-        </Popover>
-    )
-}
-function ControlsWrapper({ clientName, socket }) {
+function PointerLock({ clientName, socket }) {
     const { camera } = useThree()
     // Register the update event and clean up
     function sendData() {
@@ -101,15 +39,8 @@ function ControlsWrapper({ clientName, socket }) {
     }
 
     return (
-        <>
-            {/* <FirstPersonControls
-                activeLook
-                lookSpeed={1}
-                onUpdate={() => sendData()}
-            /> */}
-            <WasdControls onChange={() => sendData()} />
-            <PointerLockControls onChange={() => sendData()} />
-        </>
+        // <WasdControls onChange={() => sendData()} />
+        <PointerLockControls onChange={() => sendData()} />
     )
 }
 
@@ -119,7 +50,6 @@ function App() {
     const [name, setName] = useState('Username')
 
     const [clientName, setClientName] = useState('Username')
-
     useEffect(() => {
         // On mount initialize the socket connection
         setSocketClient(io())
@@ -142,60 +72,84 @@ function App() {
         socketClient && (
             <>
                 <div className="absolute inset-1/2 z-20 text-white">+</div>
+                <KeyboardControls
+                    map={[
+                        { name: 'forward', keys: ['ArrowUp', 'w', 'W'] },
+                        { name: 'backward', keys: ['ArrowDown', 's', 'S'] },
+                        { name: 'left', keys: ['ArrowLeft', 'a', 'A'] },
+                        { name: 'right', keys: ['ArrowRight', 'd', 'D'] },
+                        { name: 'jump', keys: ['Space'] },
+                    ]}
+                >
+                    <Canvas shadows>
+                        {/* <Sky } /> */}
+                        {/* <ambientLight intensity={0.5} /> */}
 
-                <Canvas camera={{ position: [0, 1, 5] }}>
-                    {/* <Sky } /> */}
-                    {/* <ambientLight intensity={0.5} /> */}
-
-                    <Stars
+                        {/* <Stars
                         radius={100}
                         depth={50}
                         count={5000}
-                        factor={4}
+                        // factor={4}
+                        factor={1}
                         saturation={0}
                         fade
                         speed={1.5}
-                    />
-                    <Sky
-                        distance={3000}
-                        turbidity={4}
-                        rayleigh={2}
-                        mieCoefficient={0.1}
-                        mieDirectionalG={0.8}
-                        inclination={0.488}
-                        azimuth={0.25}
-                    />
-                    <ControlsWrapper
+                    /> */}
+                        <Sky sunPosition={[100, 20, 100]} />
+
+                        <ambientLight intensity={0.5} />
+                        <directionalLight
+                            position={[0.01, 0.01, 0.01]}
+                            shadow-mapSize={[256, 256]}
+                            shadow-bias={-0.00001}
+                            castShadow
+                        >
+                            <orthographicCamera
+                                attach="shadow-camera"
+                                args={[-20, 20, -20, 20]}
+                            />
+                        </directionalLight>
+
+                        {/* <ControlsWrapper
                         clientName={clientName}
                         socket={socketClient}
-                    />
-                    <Physics>
-                        <Ground />
-                        <Cubes />
-                    </Physics>
+                    /> */}
+                        <Physics>
+                            <Camera />
+                            <Ground />
+                            <Cubes />
+                        </Physics>
 
-                    <Stats />
+                        <Stats />
 
-                    {/* Filter myself from the client list and create user boxes with IDs */}
-                    {Object.keys(clients)
-                        .filter((clientKey) => clientKey !== socketClient.id)
-                        .map((client) => {
-                            const { name, position, quaternion } =
-                                clients[client]
-
-                            return (
-                                <Player
-                                    key={client}
-                                    id={client}
-                                    name={name}
-                                    position={position}
-                                    quaternion={quaternion}
-                                />
+                        {/* Filter myself from the client list and create user boxes with IDs */}
+                        {Object.keys(clients)
+                            .filter(
+                                (clientKey) => clientKey !== socketClient.id
                             )
-                        })}
-                </Canvas>
+                            .map((client) => {
+                                const { name, position, quaternion } =
+                                    clients[client]
+
+                                return (
+                                    <Player
+                                        key={client}
+                                        id={client}
+                                        name={name}
+                                        position={position}
+                                        quaternion={quaternion}
+                                    />
+                                )
+                            })}
+                        <PointerLock
+                            clientName={clientName}
+                            socket={socketClient}
+                        />
+                    </Canvas>
+                </KeyboardControls>
+
                 <TextureSelector />
-                <MyPopover
+                <SettingsMenu
                     name={name}
                     setName={setName}
                     setClientName={setClientName}

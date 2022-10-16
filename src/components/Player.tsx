@@ -1,7 +1,7 @@
 import React from 'react'
 import { Billboard, Text } from '@react-three/drei'
 import { BoxGeometry, MeshNormalMaterial } from 'three'
-
+import Axe from './Axe'
 export default function Player({
     name,
     position = { x: 0, y: 0, z: 0 },
@@ -10,6 +10,15 @@ export default function Player({
 }) {
     return (
         <>
+            <Axe
+                rotation={[0, 3, 0]}
+                position={[
+                    position.x + 0.7,
+                    position.y - 0.3,
+                    position.z + 0.4,
+                ]}
+            />
+
             <Billboard position={[position.x, position.y, position.z]}>
                 <Text
                     position={[0, 1.1, 0]}

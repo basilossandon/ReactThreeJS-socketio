@@ -20,6 +20,8 @@ export const Cube = ({ position, texture }) => {
 
     return (
         <mesh
+            castShadow
+            receiveShadow
             onPointerMove={(e) => {
                 e.stopPropagation()
                 setIsHovered(true)
