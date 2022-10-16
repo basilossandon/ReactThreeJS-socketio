@@ -1,55 +1,45 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import { io } from 'socket.io-client'
 import { Canvas, useThree } from '@react-three/fiber'
 import {
-    PointerLockControls,
+    Sky,
     Stats,
     Stars,
-    Sky,
     KeyboardControls,
-    AccumulativeShadows,
-    RandomizedLight,
+    PointerLockControls,
 } from '@react-three/drei'
 
 import './App.css'
 import Player from './components/Player'
-import WasdControls from './controllers/WASD'
+import SettingsMenu from './components/SettingsMenu'
+import { Cubes } from './components/Cubes'
 import { Ground } from './components/Ground'
 import { Physics } from '@react-three/cannon'
-import { Cubes } from './components/Cubes'
-import { Camera } from './components/Camera'
-
 import { TextureSelector } from './components/TextureSelector'
-import SettingsMenu from './components/SettingsMenu'
-import Axe from './components/Axe'
+import PlayerModel from './components/PlayerModel'
 
-function PointerLock({ clientName, socket }) {
+function PointerLockWrapper({ clientName, socketClient }) {
     const { camera } = useThree()
-    // Register the update event and clean up
-    function sendData() {
+    if (camera && socketClient) {
         const { position, quaternion } = camera
-        const { id } = socket
+        const { id } = socketClient
 
-        socket.emit('move', {
+        socketClient.emit('move', {
             id,
             quaternion,
             position,
             name: clientName,
         })
     }
-
-    return (
-        // <WasdControls onChange={() => sendData()} />
-        <PointerLockControls onChange={() => sendData()} />
-    )
+    return <PointerLockControls />
 }
 
 function App() {
     const [socketClient, setSocketClient] = useState(null)
     const [clients, setClients] = useState({})
     const [name, setName] = useState('Username')
-
     const [clientName, setClientName] = useState('Username')
+
     useEffect(() => {
         // On mount initialize the socket connection
         setSocketClient(io())
@@ -85,17 +75,17 @@ function App() {
                         {/* <Sky } /> */}
                         {/* <ambientLight intensity={0.5} /> */}
 
-                        {/* <Stars
-                        radius={100}
-                        depth={50}
-                        count={5000}
-                        // factor={4}
-                        factor={1}
-                        saturation={0}
-                        fade
-                        speed={1.5}
-                    /> */}
-                        <Sky sunPosition={[100, 20, 100]} />
+                        <Stars
+                            radius={100}
+                            depth={50}
+                            count={5000}
+                            // factor={4}
+                            factor={2}
+                            saturation={0}
+                            fade
+                            speed={1.5}
+                        />
+                        <Sky sunPosition={[100, 20, 10]} />
 
                         <ambientLight intensity={0.5} />
                         <directionalLight
@@ -115,7 +105,7 @@ function App() {
                         socket={socketClient}
                     /> */}
                         <Physics>
-                            <Camera />
+                            <Player />
                             <Ground />
                             <Cubes />
                         </Physics>
@@ -132,7 +122,7 @@ function App() {
                                     clients[client]
 
                                 return (
-                                    <Player
+                                    <PlayerModel
                                         key={client}
                                         id={client}
                                         name={name}
@@ -141,9 +131,9 @@ function App() {
                                     />
                                 )
                             })}
-                        <PointerLock
+                        <PointerLockWrapper
+                            socketClient={socketClient}
                             clientName={clientName}
-                            socket={socketClient}
                         />
                     </Canvas>
                 </KeyboardControls>
