@@ -3,7 +3,8 @@ import * as THREE from 'three'
 import { useEffect, useRef } from 'react'
 import { useSphere } from '@react-three/cannon'
 import { useThree, useFrame } from '@react-three/fiber'
-import { useKeyboardControls } from '@react-three/drei'
+import { useKeyboard } from '../hooks/useKeyboard'
+
 import Axe from './Axe'
 
 const SPEED = 5
@@ -18,24 +19,25 @@ export default function Player(props) {
     const [ref, api] = useSphere(() => ({
         mass: 1,
         type: 'Dynamic',
-        position: [0, 3, 0],
+        position: [0, 2, 0],
         ...props,
     }))
-    const [, get] = useKeyboardControls()
+    const { jump, moveBackward, moveForward, moveRight, moveLeft, shift } =
+        useKeyboard()
     const { camera } = useThree()
     const velocity = useRef([0, 0, 0])
 
     useEffect(() => api.velocity.subscribe((v) => (velocity.current = v)), [])
 
     useFrame((state) => {
-        const { forward, backward, left, right, jump } = get()
+        console.log(shift)
         ref.current.getWorldPosition(camera.position)
-        frontVector.set(0, 0, Number(backward) - Number(forward))
-        sideVector.set(Number(left) - Number(right), 0, 0)
+        frontVector.set(0, 0, Number(moveBackward) - Number(moveForward))
+        sideVector.set(Number(moveLeft) - Number(moveRight), 0, 0)
         direction
             .subVectors(frontVector, sideVector)
             .normalize()
-            .multiplyScalar(SPEED)
+            .multiplyScalar(SPEED + (shift ? 5 : 0))
             .applyEuler(camera.rotation)
         speed.fromArray(velocity.current)
         axe.current.children[0].rotation.x = THREE.MathUtils.lerp(

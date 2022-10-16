@@ -37,6 +37,8 @@ function PointerLockWrapper({ clientName, socketClient }) {
 function App() {
     const [socketClient, setSocketClient] = useState(null)
     const [clients, setClients] = useState({})
+    const [cubes, setCubes] = useState({})
+
     const [name, setName] = useState('Username')
     const [clientName, setClientName] = useState('Username')
 
@@ -54,6 +56,10 @@ function App() {
         if (socketClient) {
             socketClient.on('move', (clients) => {
                 setClients(clients)
+            })
+
+            socketClient.on('cubes', (cubes) => {
+                setCubes(cubes)
             })
         }
     }, [socketClient])
@@ -108,7 +114,7 @@ function App() {
                         <Physics>
                             <Player />
                             <Ground />
-                            <Cubes />
+                            <Cubes cubes={cubes} />
                         </Physics>
 
                         <Stats />
