@@ -9,6 +9,7 @@ import WasdControls from './controllers/WASD'
 import { Ground } from './components/Ground'
 import { Physics } from '@react-three/cannon'
 import { Cubes } from './components/Cubes'
+import { TextureSelector } from './components/TextureSelector'
 
 function ControlsWrapper({ clientName, socket }) {
     const { camera } = useThree()
@@ -109,7 +110,7 @@ function App() {
                         </div>
                     </div>
                 </div>
-                <Canvas camera={{ position: [0, 1, 0] }}>
+                <Canvas camera={{ position: [0, 1, 5] }}>
                     {/* <Sky } /> */}
                     {/* <ambientLight intensity={0.5} /> */}
 
@@ -131,18 +132,16 @@ function App() {
                         inclination={0.488}
                         azimuth={0.25}
                     />
-
+                    <ControlsWrapper
+                        clientName={clientName}
+                        socket={socketClient}
+                    />
                     <Physics>
                         <Ground />
                         <Cubes />
                     </Physics>
 
                     <Stats />
-
-                    <ControlsWrapper
-                        clientName={clientName}
-                        socket={socketClient}
-                    />
 
                     {/* Filter myself from the client list and create user boxes with IDs */}
                     {Object.keys(clients)
@@ -162,6 +161,7 @@ function App() {
                             )
                         })}
                 </Canvas>
+                <TextureSelector />
             </>
         )
     )
