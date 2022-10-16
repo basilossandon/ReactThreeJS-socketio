@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { io } from 'socket.io-client'
 import { Canvas, useThree } from '@react-three/fiber'
-import { MeshNormalMaterial, BoxGeometry } from 'three'
-import { PointerLockControls, Text, Stats } from '@react-three/drei'
+import { PointerLockControls, Stats, Stars, Sky } from '@react-three/drei'
 
 import './App.css'
+import Player from './components/Player'
 import WasdControls from './controllers/WASD'
+import { Ground } from './components/Ground'
+import { Physics } from '@react-three/cannon'
 
 function ControlsWrapper({ clientName, socket }) {
     const { camera } = useThree()
@@ -32,96 +34,6 @@ function ControlsWrapper({ clientName, socket }) {
             <WasdControls onChange={() => sendData()} />
             <PointerLockControls onChange={() => sendData()} />
         </>
-    )
-}
-
-function TextSprite({
-    children,
-    position,
-    scale,
-    color = 'white',
-    fontSize = 45,
-}) {
-    const canvas = useMemo(() => {
-        var fontface = 'Arial'
-        var fontsize = fontSize
-        var borderThickness = 4
-
-        var canvas = document.createElement('canvas')
-        var context = canvas.getContext('2d')
-        context.textBaseline = 'middle'
-        context.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, arial, sans-serif`
-
-        var metrics = context.measureText(children)
-        console.log(metrics)
-        var textWidth = metrics.width
-
-        context.lineWidth = borderThickness
-
-        context.fillStyle = color
-        context.fillText(children, textWidth - textWidth * 0.8, fontsize)
-        return canvas
-    }, [children])
-
-    return (
-        <sprite scale={scale} position={position}>
-            <spriteMaterial
-                sizeAttenuation={false}
-                attach="material"
-                transparent
-                alphaTest={0.5}
-            >
-                <canvasTexture attach="map" image={canvas} />
-            </spriteMaterial>
-        </sprite>
-    )
-}
-
-function UserWrapper({
-    name,
-    position = { x: 0, y: 0, z: 0 },
-    quaternion = { _x: 0, _y: 0, _z: 0 },
-    id,
-}) {
-    return (
-        <mesh
-            position={[position.x, position.y, position.z]}
-            quaternion={[
-                quaternion._x,
-                quaternion._y,
-                quaternion._z,
-                quaternion._w,
-            ]}
-            geometry={new BoxGeometry()}
-            material={new MeshNormalMaterial()}
-        >
-            {/* Optionally show the ID above the user's mesh */}
-
-            <TextSprite
-                scale={[1, 1, 1]}
-                opacity={1}
-                position={[position.x, position.y, position.z]}
-            >
-                {name}
-            </TextSprite>
-
-            {/* <Text
-                rotation={[
-                    0,
-                    Math.atan2(
-                        camera.position.x - position.x,
-                        camera.position.z - position.z
-                    ),
-                    0,
-                ]}
-                position={[0, 1.0, 0]}
-                color="black"
-                anchorX="center"
-                anchorY="middle"
-            >
-                {name}
-            </Text> */}
-        </mesh>
     )
 }
 
@@ -185,7 +97,6 @@ function App() {
                                 <div
                                     onClick={(e) => {
                                         setClientName(name)
-                                        sendData()
                                     }}
                                     className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                 >
@@ -195,14 +106,40 @@ function App() {
                         </div>
                     </div>
                 </div>
-                <Canvas camera={{ position: [0, 1, -5], near: 0.1, far: 1000 }}>
+                <Canvas camera={{ position: [0, 1, 5], near: 0.1 }}>
+                    {/* <Sky } /> */}
+                    {/* <ambientLight intensity={0.5} /> */}
+
+                    <Stars
+                        radius={100}
+                        depth={50}
+                        count={5000}
+                        factor={4}
+                        saturation={0}
+                        fade
+                        speed={1.5}
+                    />
+                    <Sky
+                        distance={3000}
+                        turbidity={4}
+                        rayleigh={2}
+                        mieCoefficient={0.1}
+                        mieDirectionalG={0.8}
+                        inclination={0.488}
+                        azimuth={0.25}
+                    />
+
+                    <Physics>
+                        <Ground />
+                    </Physics>
+
                     <Stats />
 
                     <ControlsWrapper
                         clientName={clientName}
                         socket={socketClient}
                     />
-                    <gridHelper rotation={[0, 0, 0]} />
+
                     {/* Filter myself from the client list and create user boxes with IDs */}
                     {Object.keys(clients)
                         .filter((clientKey) => clientKey !== socketClient.id)
@@ -211,7 +148,7 @@ function App() {
                                 clients[client]
 
                             return (
-                                <UserWrapper
+                                <Player
                                     key={client}
                                     id={client}
                                     name={name}
@@ -220,16 +157,6 @@ function App() {
                                 />
                             )
                         })}
-
-                    {/* fakeuser */}
-
-                    <UserWrapper
-                        key="fake"
-                        id="fake"
-                        name="fake"
-                        position={[3.1840431776959517, 1, 4.933878678280492]}
-                        quaternion={[0, 0, 60]}
-                    />
                 </Canvas>
             </>
         )

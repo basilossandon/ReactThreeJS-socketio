@@ -292,6 +292,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@pmndrs/cannon-worker-api@^2.1.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@pmndrs/cannon-worker-api/-/cannon-worker-api-2.2.0.tgz#f1fefff3572fe77728ac8e3095676318e4121a38"
+  integrity sha512-IS1Ewx4PPkz/mAAzfiKy0HtEIECtkwDsAvErEQdEn0EbVUAEnh5f0Pdnv3/1k4afZfuDj0AO+87JlbBcUUpRTw==
+
 "@react-spring/animated@~9.5.5":
   version "9.5.5"
   resolved "https://registry.yarnpkg.com/@react-spring/animated/-/animated-9.5.5.tgz#d3bfd0f62ed13a337463a55d2c93bb23c15bbf3e"
@@ -337,6 +342,15 @@
   version "9.5.5"
   resolved "https://registry.yarnpkg.com/@react-spring/types/-/types-9.5.5.tgz#c8e94f1b9232ca7cb9d860ea67762ec401b1de14"
   integrity sha512-7I/qY8H7Enwasxr4jU6WmtNK+RZ4Z/XvSlDvjXFVe7ii1x0MoSlkw6pD7xuac8qrHQRm9BTcbZNyeeKApYsvCg==
+
+"@react-three/cannon@^6.4.0":
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/@react-three/cannon/-/cannon-6.4.0.tgz#89aee95752c0f02caac04fa97675ccec59bd9b61"
+  integrity sha512-hrT7ploQOCKyP/vVSm9RWN2r2WPxjpTHDNnkxzwa/doK3IyREJ+40Ghor7E7pf76sjRgJFBrypVUSpKDcescTA==
+  dependencies:
+    "@pmndrs/cannon-worker-api" "^2.1.0"
+    cannon-es "^0.20.0"
+    cannon-es-debugger "^1.0.0"
 
 "@react-three/drei@9.34.3":
   version "9.34.3"
@@ -722,6 +736,16 @@ caniuse-lite@^1.0.30001400, caniuse-lite@^1.0.30001407:
   version "1.0.30001419"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001419.tgz#3542722d57d567c8210d5e4d0f9f17336b776457"
   integrity sha512-aFO1r+g6R7TW+PNQxKzjITwLOyDhVRLjW0LcwS/HCZGUUKTGNp9+IwLC4xyDSZBygVL/mxaFR3HIV6wEKQuSzw==
+
+cannon-es-debugger@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/cannon-es-debugger/-/cannon-es-debugger-1.0.0.tgz#28c6679b30dcf608e978225239f447a8fe55ccb4"
+  integrity sha512-sE9lDOBAYFKlh+0w+cvWKwUhJef8HYnUSVPWPL0jD15MAuVRQKno4QYZSGxgOoJkMR3mQqxL4bxys2b3RSWH8g==
+
+cannon-es@^0.20.0:
+  version "0.20.0"
+  resolved "https://registry.yarnpkg.com/cannon-es/-/cannon-es-0.20.0.tgz#bf2f62a674701f37e3d861c90668a32d4d32f082"
+  integrity sha512-eZhWTZIkFOnMAJOgfXJa9+b3kVlvG+FX4mdkpePev/w/rP5V8NRquGyEozcjPfEoXUlb+p7d9SUcmDSn14prOA==
 
 chalk@^2.0.0:
   version "2.4.2"
