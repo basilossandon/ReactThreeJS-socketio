@@ -30,7 +30,6 @@ export default function Player(props) {
     useEffect(() => api.velocity.subscribe((v) => (velocity.current = v)), [])
 
     useFrame((state) => {
-        console.log(shift)
         ref.current.getWorldPosition(camera.position)
         frontVector.set(0, 0, Number(moveBackward) - Number(moveForward))
         sideVector.set(Number(moveLeft) - Number(moveRight), 0, 0)

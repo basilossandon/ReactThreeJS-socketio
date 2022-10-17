@@ -19,16 +19,18 @@
 // }
 
 import React from 'react'
+import { nanoid } from 'nanoid'
+
 import { usePlane } from '@react-three/cannon'
 import { groundTexture } from '../images/textures'
 import { useStore } from '../hooks/useStore'
 
-export const Ground = () => {
+export const Ground = ({ socket }) => {
     const [ref] = usePlane(() => ({
         rotation: [-Math.PI / 2, 0, 0],
         position: [0, -0.5, 0],
     }))
-    const [addCube] = useStore((state) => [state.addCube])
+    const [texture] = useStore((state) => [state.texture])
 
     groundTexture.repeat.set(100, 100)
 
@@ -40,7 +42,12 @@ export const Ground = () => {
                 const [x, y, z] = Object.values(e.point).map((val) =>
                     Math.ceil(val)
                 )
-                addCube(x, y, z)
+
+                socket.emit('addCube', {
+                    key: nanoid(),
+                    pos: [x, y, z],
+                    texture,
+                })
             }}
             ref={ref}
         >

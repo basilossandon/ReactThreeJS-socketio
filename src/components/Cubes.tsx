@@ -2,10 +2,7 @@ import React from 'react'
 import { useStore } from '../hooks/useStore'
 import { Cube } from './Cube'
 
-export const Cubes = () => {
-    const [cubes] = useStore((state) => [state.cubes])
-    console.log(cubes)
-
+export const Cubes = ({ cubes = [], socket }) => {
     return (
         <>
             {/* 
@@ -31,7 +28,15 @@ export const Cubes = () => {
     ] 
     */}
             {cubes.map(({ key, pos, texture }) => {
-                return <Cube key={key} position={pos} texture={texture} />
+                return (
+                    <Cube
+                        key={key}
+                        cubes={cubes}
+                        socket={socket}
+                        position={pos}
+                        texture={texture}
+                    />
+                )
             })}
         </>
     )

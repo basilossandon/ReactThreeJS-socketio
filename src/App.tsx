@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { io } from 'socket.io-client'
 import { Canvas, useThree } from '@react-three/fiber'
 import {
     Sky,
@@ -17,6 +16,7 @@ import { Ground } from './components/Ground'
 import { Physics } from '@react-three/cannon'
 import { TextureSelector } from './components/TextureSelector'
 import PlayerModel from './components/PlayerModel'
+import { useStore } from './hooks/useStore'
 
 function PointerLockWrapper({ clientName, socketClient }) {
     const { camera } = useThree()
@@ -35,18 +35,13 @@ function PointerLockWrapper({ clientName, socketClient }) {
 }
 
 function App() {
-    const [socketClient, setSocketClient] = useState(null)
-    const [clients, setClients] = useState({})
-    const [cubes, setCubes] = useState({})
-
+    const [socketClient] = useStore((state) => [state.socketClient])
     const [name, setName] = useState('Username')
+    const [cubes, setCubes] = useState([])
+    const [clients, setClients] = useState({})
     const [clientName, setClientName] = useState('Username')
 
     useEffect(() => {
-        // On mount initialize the socket connection
-        setSocketClient(io())
-
-        // Dispose gracefuly
         return () => {
             if (socketClient) socketClient.disconnect()
         }
@@ -79,9 +74,6 @@ function App() {
                     ]}
                 >
                     <Canvas shadows>
-                        {/* <Sky } /> */}
-                        {/* <ambientLight intensity={0.5} /> */}
-
                         <Stars
                             radius={100}
                             depth={50}
@@ -106,14 +98,11 @@ function App() {
                                 args={[-10, 10, -10, 10]}
                             />
                         </directionalLight>
-                        {/* <ControlsWrapper
-                        clientName={clientName}
-                        socket={socketClient}
-                    /> */}
+
                         <Physics>
                             <Player />
-                            <Ground />
-                            <Cubes cubes={cubes} />
+                            <Ground socket={socketClient} />
+                            <Cubes socket={socketClient} cubes={cubes} />
                         </Physics>
 
                         <Stats />
