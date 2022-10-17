@@ -1,5 +1,6 @@
 import React from 'react'
 import { nanoid } from 'nanoid'
+import _ from 'lodash'
 
 import { useBox } from '@react-three/cannon'
 import { useState } from 'react'
@@ -24,13 +25,9 @@ export const Cube = ({ cubes, position, texture, socket }) => {
     }
 
     function removeCube(position) {
-        let selectedCube = cubes.filter((cube) => {
-            const [X, Y, Z] = cube.pos
-            return X !== position[0] || Y !== position[1] || Z !== position[2]
-        })
-
+        let selectedCube = cubes.filter((cube) => _.isEqual(cube.pos, position))
         socket.emit('removeCube', {
-            key: selectedCube.key,
+            key: selectedCube[0].key,
         })
     }
 

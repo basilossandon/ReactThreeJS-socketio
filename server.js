@@ -28,6 +28,7 @@ const server = app.listen(process.env.PORT || 4444, () => {
 const ioServer = new Server(server)
 
 let clients = {}
+let cubes = []
 
 // Socket app msgs
 ioServer.on('connection', (client) => {
@@ -43,6 +44,24 @@ ioServer.on('connection', (client) => {
     }
 
     ioServer.sockets.emit('move', clients)
+
+    client.on('addCube', (payload) => {
+        const { key, pos, texture } = payload
+        cubes.push({
+            key,
+            pos,
+            texture,
+        })
+        ioServer.sockets.emit('cubes', cubes)
+    })
+
+    client.on('removeCube', (payload) => {
+        const { key } = payload
+        console.log(cubes)
+        cubes = cubes.filter((cube) => cube.key !== key)
+        console.log(cubes)
+        ioServer.sockets.emit('cubes', cubes)
+    })
 
     client.on('move', (payload) => {
         const { id, name, quaternion, position } = payload

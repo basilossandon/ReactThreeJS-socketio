@@ -58,6 +58,7 @@ ioServer.on('connection', (client) => {
     }
 
     ioServer.sockets.emit('move', clients)
+    ioServer.sockets.emit('cubes', cubes)
 
     client.on('addCube', (payload) => {
         const { key, pos, texture } = payload
@@ -72,7 +73,7 @@ ioServer.on('connection', (client) => {
     client.on('removeCube', (payload) => {
         const { key } = payload
         console.log(cubes)
-        cubes = cubes.filter((cube) => cube.key === key)
+        cubes = cubes.filter((cube) => cube.key !== key)
         console.log(cubes)
         ioServer.sockets.emit('cubes', cubes)
     })
